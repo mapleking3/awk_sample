@@ -1,0 +1,32 @@
+awk '/RETTON/ {print $0}' out.log | awk '/onSrMsgProc/ {print $0}' | sed "s/.*mContent=\(.*\), mJsonResult.*/\1/g"
+
+awk '/(ON_END_SPEECH_MSG|poiSelect)/ { print $0 }' out.log | awk '/(ON_END_SPEECH_MSG|onSrMsgProc)/ { print $0 }' | awk '/onSrMsgProc/ { print a "|" $0 } { a = $0 }' | awk -F "ON_END_SPEECH_MSG:" '{print $2}'
+
+awk '/(ON_END_SPEECH_MSG|poiSelect)/ { print $0 }' out.log | awk '/(ON_END_SPEECH_MSG|onSrMsgProc)/ { print $0 }' | awk '/onSrMsgProc/ { print a "|" $0 } { a = $0 }' | awk -F "ON_END_SPEECH_MSG:" '{print $2}' | sed "s/\(.*\) I\/RETTON.*mContent=\(.*\), mJsonResult.*/\1|\2/g"
+
+
+awk -F "|" '{
+	vad=$1;
+	result=sprintf("2016-%s", $2);
+	result_str=result;
+	gsub(/-/, " ", vad);
+	gsub(/:/, " ", vad);
+	split(vad, fields, ".");
+	gsub(/-/, " ", result);
+	gsub(/:/, " ", result);
+	split(result, ofields, ".");
+	print $3 "|" $1 "|" result_str "|" mktime(vad) fields[2] "|" mktime(result) ofields[2];
+}'
+
+awk '/(ON_END_SPEECH_MSG|poiSelect)/ { print $0 }' 20160629114648.log | awk '/(ON_END_SPEECH_MSG|onSrMsgProc)/ { print $0 }' | awk '/onSrMsgProc/ { print a "|" $0 } { a = $0 }' | awk -F "ON_END_SPEECH_MSG:" '{print $2}' | sed "s/\(.*\) I\/RETTON.*mContent=\(.*\), mJsonResult.*/\1|\2/g" | awk -F "|" '{
+	vad=$1;
+	result=sprintf("2016-%s", $2);
+	result_str=result;
+	gsub(/-/, " ", vad);
+	gsub(/:/, " ", vad);
+	split(vad, fields, ".");
+	gsub(/-/, " ", result);
+	gsub(/:/, " ", result);
+	split(result, ofields, ".");
+	print $3 "|" $1 "|" result_str "|" mktime(vad) fields[2] "|" mktime(result) ofields[2];
+}'
