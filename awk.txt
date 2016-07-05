@@ -30,3 +30,5 @@ awk '/(ON_END_SPEECH_MSG|poiSelect)/ { print $0 }' 20160629114648.log | awk '/(O
 	split(result, ofields, ".");
 	print $3 "|" $1 "|" result_str "|" mktime(vad) fields[2] "|" mktime(result) ofields[2];
 }'
+
+sed "s/.*cts.*\"\([0-9]\+\)\".*da.*\"et\":\([0-9]\{1\}\).*/\1|\2/g" location21698-0609.json | awk -F"|" '{ s = $1/1000; ms = $1 % 1000; print $2 "|" strftime("%F %T", $1/1000, "CST") "." ms}' > out.txt
